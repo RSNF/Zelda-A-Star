@@ -31,9 +31,21 @@ class AssetUtils:
         
         return sprites
 
+    def getTextures() -> dict:
+        pathTextures = "src/assets/textures/"
+        files = os.listdir(pathTextures)
+
+        textures = dict()
+
+        for name in files:
+            textures[name.split('.')[0]] = pathTextures + name
+        
+        return textures
+
 if __name__ == "__main__":
     mapa = AssetUtils.getMap(input())
     sprites = AssetUtils.getSprites()
+    textures = AssetUtils.getTextures()
 
     for linha in mapa:
         print(''.join(linha))
@@ -42,3 +54,8 @@ if __name__ == "__main__":
     
     for chave in sprites:
         print(chave + ' -> ' + sprites[chave])
+
+    print()
+
+    for chave in textures:
+        print(chave + ' -> ' + textures[chave])
