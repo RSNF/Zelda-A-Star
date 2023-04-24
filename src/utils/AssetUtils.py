@@ -1,8 +1,9 @@
 import os
+import json
 
 class AssetUtils:
 
-    def getMap(mapName: str) -> list:
+    def getMap(mapName:str) -> list:
         if not mapName.endswith(".txt"):
             mapName = mapName + ".txt"
 
@@ -18,7 +19,18 @@ class AssetUtils:
                 else:
                     mapaLine.append(letter)
 
+        file.close()
+
         return mapa
+    
+    def getPointsDetails() -> dict:
+        file = open("src/assets/files/points.json")
+
+        details = json.load(file)
+
+        file.close()
+
+        return details
 
     def getSprites() -> dict:
         pathSprites = "src/assets/sprites/"
@@ -44,6 +56,7 @@ class AssetUtils:
 
 if __name__ == "__main__":
     mapa = AssetUtils.getMap(input())
+    details = AssetUtils.getPointsDetails()
     sprites = AssetUtils.getSprites()
     textures = AssetUtils.getTextures()
 
@@ -51,7 +64,12 @@ if __name__ == "__main__":
         print(''.join(linha))
 
     print()
+
+    for chave in details:
+        print(chave + ' -> ' + str(details[chave]["cost"]) + " : " + details[chave]["texture"])
     
+    print()
+
     for chave in sprites:
         print(chave + ' -> ' + sprites[chave])
 
