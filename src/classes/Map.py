@@ -1,6 +1,7 @@
+import utils.GameUtils as gu
+
 from .Point import Point
 from utils.AssetUtils import AssetUtils
-from utils.GameUtils import get_tile_details
 
 class Map:
     
@@ -21,7 +22,7 @@ class Map:
         for i in range(mapSize):
             temp = list()
             for j in range(mapSize):
-                (cost, texture, sprite) = get_tile_details(mapa[i][j])
+                (cost, texture, sprite) = gu.get_tile_details(mapa[i][j])
 
                 if not sprite:
                     sprite = self.getAnySprite(i, j)
