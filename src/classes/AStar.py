@@ -4,7 +4,7 @@ from classes.Point import Point
 
 class AStar:
 
-    def __h(current_point, end_point) -> int:
+    def __h(current_point:Point, end_point:Point) -> int:
         x1, y1 = current_point
         x2, y2 = end_point
         

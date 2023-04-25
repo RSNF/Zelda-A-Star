@@ -9,7 +9,8 @@ def main() -> None:
     mapDungeon1 = Map("dungeon1", (25, 13), (2, 13), game.sizeWin)
     mapDungeon2 = Map("dungeon2", (25, 14), (19, 15), game.sizeWin)
 
-    link = Link(mapHyrule.points[27][24], 672 // len(mapHyrule.points))
+    # link = Link(mapHyrule.points[27][24], 672 // len(mapHyrule.points))
+    link = Link.make_start(mapHyrule.points[27][24], 672 // len(mapHyrule.points))
     lista = list()
     setattr(game, 'map', mapHyrule)
     setattr(game, 'link', link)
@@ -25,7 +26,8 @@ def main() -> None:
             game.gameStart()
         elif status == "RESTART":
             game = Game(672)
-            link = Link(mapHyrule.points[27][24], 672 // len(mapHyrule.points))
+            link = Link.make_start(mapHyrule.points[27][24])
+            # link = Link(mapHyrule.points[27][24], 672 // len(mapHyrule.points))
             setattr(game, 'map', mapHyrule)
             setattr(game, 'link', link)
             game.gameUpdate(0)

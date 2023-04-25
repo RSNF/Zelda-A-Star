@@ -1,6 +1,9 @@
 import pygame
 import time
 
+from classes.Link import Link
+from .AStar import AStar
+
 class Game:
 
     def __init__(self, sizeWin) -> None:
@@ -37,7 +40,15 @@ class Game:
         pygame.quit()
     
     def gameStart(self) -> None:
-        pass
+        path =AStar.find_path(map=self.map, start_point=self.map.getStart(), end_point=self.map.getEnd())
+        for point in path:
+            Link.moveLink(self.link, point)
+            player = Link(self.map.points[point.x][point.y], 672 // len(self.map.points))
+            self.player.add(player)
+            self.player.draw(self.window)
+            pygame.display.update()
+            pygame.display.update()
+            print('x = {}, y = {}'.format(point.x, point.y))
 
     def drawPoints(self) -> None:
         mapSize = len(self.map.points)
