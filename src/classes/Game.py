@@ -91,8 +91,8 @@ class Game:
         
         if hasattr(self, 'path') and len(self.path) != 0:
             self.link.moveLink(self.path.pop(0))
-            (x, y) = self.link.point.getLocation()
 
+            (x, y) = self.link.point.getLocation()
             print("{} --> x = {}, y = {} : cost: {}".format(self.map.name, x, y, self.link.point.cost))
 
             if((x == 1 and y == 2) and self.map.name == "hyrule"):
@@ -101,7 +101,6 @@ class Game:
                     print(self.costs[key])
                 print("Custo total --> {}".format(self.total_cost))
         
-
         self.canvas.blit(self.link.sprite, (self.link.point.x, self.link.point.y))
 
     def drawGrid(self) -> None:

@@ -25,14 +25,14 @@ class AStar:
         g_score = {point: float("inf") for row in map.points for point in row}
         g_score[start_point] = 0
 
-        # CFaz o calculo do F para cada ponto
+        # Faz o calculo do F para cada ponto
         f_score = {point: float("inf") for row in map.points for point in row}
         f_score[start_point] = AStar.__h(start_point.getLocation(), end_point.getLocation())
 
         # Loop de execução do algoritmo enquanto a lista fechada não estiver vazia
         while not closed_list.empty():
 
-            # Pega o ponto com maior prioridade da lista fechada e o remove das duas listas
+            # Pega o ponto com maior prioridade da lista fechada e o remove
             current = closed_list.get()[2]
             open_list.remove(current)
 

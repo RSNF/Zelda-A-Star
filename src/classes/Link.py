@@ -1,7 +1,7 @@
 import pygame
 from classes.Point import Point
 
-class Link(pygame.sprite.Sprite):
+class Link():
 
     def __init__(self, point:Point, gridFit:int) -> None:
         super().__init__()
@@ -35,9 +35,3 @@ class Link(pygame.sprite.Sprite):
     def moveLink(self, point:Point) -> None:
         self.changeSprite(point.x, point.y)
         self.point = point
-    
-    def make_start(point, gridFit):
-        player = Link(point, gridFit)
-        player_group = pygame.sprite.Group()
-        player_group.add(player)
-        return player_group
