@@ -10,6 +10,8 @@ class Game:
         self.sizeWin = sizeWin
         self.canvas = pygame.display.set_mode((sizeWin, sizeWin))
         self.canSwordSFX = True
+        self.costs = {}
+        self.total_cost = int(0)
 
         pygame.display.set_caption("Zelda A Star")
         pygame.init()
@@ -46,18 +48,15 @@ class Game:
     def gameStart(self) -> None:
         if not hasattr(self, 'paths'):
             self.paths = gu.get_game_path(self.maps)
-            self.path = self.paths[0]
+            self.path = self.paths["hyrule"]
             pygame.mixer.music.load("src/assets/music/hyrule.mp3")
             pygame.mixer.music.play()
-        # path = AStar.find_path(map=self.map, start_point=self.map.getStart(), end_point=self.map.getEnd())
-        # for point in path:
-        #     # Link.moveLink(self.link, point)
-        #     player = Link(self.map.points[point.row][point.col], self.sizeWin // len(self.map.points))
-        #     player.moveLink(point)
-        #     # self.player.add(player)
-        #     # self.player.draw(self.window)
-        #     pygame.display.update()
-        #     print('x = {}, y = {}'.format(point.x, point.y))
+            
+            for key, points in self.paths.items():
+                path_cost = sum(list(map(lambda point: point.cost, points)))
+                self.costs[key] = ("Custo {} --> {}".format(key, path_cost))
+                self.total_cost += path_cost
+
 
     def drawPoints(self) -> None:
 
@@ -89,9 +88,20 @@ class Game:
         gridFit = self.sizeWin // mapSize
 
         setattr(self.link, 'gridFit', gridFit)
-
+        
         if hasattr(self, 'path') and len(self.path) != 0:
             self.link.moveLink(self.path.pop(0))
+            (x, y) = self.link.point.getLocation()
+
+            print("{} --> x = {}, y = {} : cost: {}".format(self.map.name, x, y, self.link.point.cost))
+
+            if((x == 1 and y == 2) and self.map.name == "hyrule"):
+                print("\n################ Custos ################")
+                for key in self.costs:
+                    print(self.costs[key])
+                print("Custo total --> {}".format(self.total_cost))
+        
+
         self.canvas.blit(self.link.sprite, (self.link.point.x, self.link.point.y))
 
     def drawGrid(self) -> None:
@@ -107,24 +117,24 @@ class Game:
         self.sfxConditionals(self.link.point.getLocation())
 
         if hasattr(self, 'path') and self.map.name == "hyrule":
-            self.paths[0] = self.path
+            self.paths[self.map.name] = self.path
 
             if self.link.point.row == 32 and self.link.point.col == 5:
                 self.map = self.maps["dungeon0"]
-                self.path = self.paths[1]
+                self.path = self.paths["dungeon0"]
                 self.musicConditionals()
             elif self.link.point.row == 17 and self.link.point.col == 39:
                 self.map = self.maps["dungeon1"]
-                self.path = self.paths[2]
+                self.path = self.paths["dungeon1"]
                 self.musicConditionals()
             elif self.link.point.row == 1 and self.link.point.col == 24:
                 self.map = self.maps["dungeon2"]
-                self.path = self.paths[3]
+                self.path = self.paths["dungeon2"]
                 self.musicConditionals()
         else:
             if hasattr(self, 'path') and len(self.path) == 0:
                 self.map = self.maps["hyrule"]
-                self.path = self.paths[0]
+                self.path = self.paths["hyrule"]
                 self.musicConditionals()
         
     def musicConditionals(self) -> None:

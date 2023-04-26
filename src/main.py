@@ -17,8 +17,7 @@ def main() -> None:
     }
 
     link = Link(mapHyrule.points[27][24], 672 // len(mapHyrule.points))
-    # link = Link.make_start(mapHyrule.points[27][24], 672 // len(mapHyrule.points))
-
+    
     setattr(game, 'map', mapHyrule)
     setattr(game, 'maps', mapDict)
     setattr(game, 'link', link)
