@@ -2,6 +2,7 @@ from classes.Game import Game
 from classes.Map import Map
 from classes.Link import Link
 
+
 def main() -> None:
     game = Game(672)
     mapHyrule = Map("hyrule", (27, 24), (7, 6), game.sizeWin)
@@ -17,10 +18,10 @@ def main() -> None:
     }
 
     link = Link(mapHyrule.points[27][24], 672 // len(mapHyrule.points))
-    
-    setattr(game, 'map', mapHyrule)
-    setattr(game, 'maps', mapDict)
-    setattr(game, 'link', link)
+
+    setattr(game, "map", mapHyrule)
+    setattr(game, "maps", mapDict)
+    setattr(game, "link", link)
 
     while True:
 
@@ -35,13 +36,14 @@ def main() -> None:
             game = Game(672)
             link = Link(mapHyrule.points[27][24], 672 // len(mapHyrule.points))
 
-            setattr(game, 'map', mapHyrule)
-            setattr(game, 'maps', mapDict)
-            setattr(game, 'link', link)
+            setattr(game, "map", mapHyrule)
+            setattr(game, "maps", mapDict)
+            setattr(game, "link", link)
             game.gameUpdate(0.05)
             continue
 
         game.gameUpdate(0)
+
 
 if __name__ == "__main__":
     main()

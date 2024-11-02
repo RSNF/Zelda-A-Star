@@ -1,8 +1,9 @@
 import pygame
 import time
 import utils.GameUtils as gu
-
+from dotenv import load_dotenv, dotenv_values
 from classes.Point import Point
+
 
 class Game:
 
@@ -12,6 +13,11 @@ class Game:
         self.canSwordSFX = True
         self.costs = {}
         self.total_cost = int(0)
+        self.clock = pygame.time.Clock()
+
+        load_dotenv()
+        self.DRAW_GRID = dotenv_values(".env")["DRAW_GRID"]
+        self.FPS = int(dotenv_values(".env")["FPS"])
 
         pygame.display.set_caption("Zelda A Star")
         pygame.init()
@@ -32,31 +38,34 @@ class Game:
 
         return status
 
-    def gameUpdate(self, sleepTime:float) -> None:
+    def gameUpdate(self, sleepTime: float) -> None:
         if sleepTime != 0:
-            time.sleep(sleepTime)
+            self.clock.tick(10)
         self.conditionals()
         self.drawPoints()
         self.drawObjects()
         self.drawLink()
-        self.drawGrid()
+
+        if self.DRAW_GRID == "yes":
+            self.drawGrid()
+
         pygame.display.update()
+        self.clock.tick(self.FPS)
 
     def gameQuit(self) -> None:
         pygame.quit()
-    
+
     def gameStart(self) -> None:
-        if not hasattr(self, 'paths'):
+        if not hasattr(self, "paths"):
             self.paths = gu.get_game_path(self.maps)
             self.path = self.paths["hyrule"]
             pygame.mixer.music.load("src/assets/music/hyrule.mp3")
             pygame.mixer.music.play()
-            
+
             for key, points in self.paths.items():
                 path_cost = sum(list(map(lambda point: point.cost, points)))
-                self.costs[key] = ("Custo {} --> {}".format(key, path_cost))
+                self.costs[key] = "Custo {} --> {}".format(key, path_cost)
                 self.total_cost += path_cost
-
 
     def drawPoints(self) -> None:
 
@@ -64,7 +73,7 @@ class Game:
             for point in linha:
                 self.drawPoint(point)
 
-    def drawPoint(self, point:Point) -> None:
+    def drawPoint(self, point: Point) -> None:
         mapSize = len(self.map.points)
         gridFit = self.sizeWin // mapSize
 
@@ -87,20 +96,24 @@ class Game:
         mapSize = len(self.map.points)
         gridFit = self.sizeWin // mapSize
 
-        setattr(self.link, 'gridFit', gridFit)
-        
-        if hasattr(self, 'path') and len(self.path) != 0:
+        setattr(self.link, "gridFit", gridFit)
+
+        if hasattr(self, "path") and len(self.path) != 0:
             self.link.moveLink(self.path.pop(0))
 
             (x, y) = self.link.point.getLocation()
-            print("{} --> x = {}, y = {} : cost: {}".format(self.map.name, x, y, self.link.point.cost))
+            print(
+                "{} --> x = {}, y = {} : cost: {}".format(
+                    self.map.name, x, y, self.link.point.cost
+                )
+            )
 
-            if((x == 1 and y == 2) and self.map.name == "hyrule"):
+            if (x == 1 and y == 2) and self.map.name == "hyrule":
                 print("\n################ Custos ################")
                 for key in self.costs:
                     print(self.costs[key])
                 print("Custo total --> {}".format(self.total_cost))
-        
+
         self.canvas.blit(self.link.sprite, (self.link.point.x, self.link.point.y))
 
     def drawGrid(self) -> None:
@@ -108,14 +121,21 @@ class Game:
         gridFit = self.sizeWin // mapSize
 
         for i in range(mapSize):
-            pygame.draw.line(self.canvas, (0, 0, 0), (0, i * gridFit), (self.sizeWin, i * gridFit))
+            pygame.draw.line(
+                self.canvas, (0, 0, 0), (0, i * gridFit), (self.sizeWin, i * gridFit)
+            )
             for j in range(mapSize):
-                pygame.draw.line(self.canvas, (0, 0, 0), (j * gridFit, 0), (j * gridFit, self.sizeWin))
+                pygame.draw.line(
+                    self.canvas,
+                    (0, 0, 0),
+                    (j * gridFit, 0),
+                    (j * gridFit, self.sizeWin),
+                )
 
     def conditionals(self) -> None:
         self.sfxConditionals(self.link.point.getLocation())
 
-        if hasattr(self, 'path') and self.map.name == "hyrule":
+        if hasattr(self, "path") and self.map.name == "hyrule":
             self.paths[self.map.name] = self.path
 
             if self.link.point.row == 32 and self.link.point.col == 5:
@@ -131,11 +151,11 @@ class Game:
                 self.path = self.paths["dungeon2"]
                 self.musicConditionals()
         else:
-            if hasattr(self, 'path') and len(self.path) == 0:
+            if hasattr(self, "path") and len(self.path) == 0:
                 self.map = self.maps["hyrule"]
                 self.path = self.paths["hyrule"]
                 self.musicConditionals()
-        
+
     def musicConditionals(self) -> None:
         if self.map.name != "hyrule":
             pygame.mixer.music.load("src/assets/music/dungeon.mp3")
@@ -144,11 +164,15 @@ class Game:
             pygame.mixer.music.load("src/assets/music/hyrule.mp3")
             pygame.mixer.music.play(0)
 
-    def sfxConditionals(self, pos:list) -> None:
+    def sfxConditionals(self, pos: list) -> None:
         (row, col) = pos
 
         if self.map.name == "hyrule":
-            if (row == 32 and col == 5) or (row == 17 and col == 39) or (row == 1 and col == 24):
+            if (
+                (row == 32 and col == 5)
+                or (row == 17 and col == 39)
+                or (row == 1 and col == 24)
+            ):
                 sound = pygame.mixer.Sound("src/assets/sfx/down_dungeon.wav")
                 pygame.mixer.Sound.play(sound)
             elif row == 5 and col == 6:
